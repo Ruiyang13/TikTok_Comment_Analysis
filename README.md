@@ -22,50 +22,77 @@ I used a JavaScript script to scrape the DOM and extract the following features:
 
 ```javascript
 (function() {
-    // --- PART 1: Video Context (Parent Data) ---
-    let url = window.location.href;
-    let videoId = url.split('video/')[1]?.split('?')[0] || "Unknown ID";
-    
-    // Scrape Caption & Extract Hashtags
-    let rawCaption = document.querySelector('[data-e2e="video-desc"]')?.innerText.replace(/[\n\r\t]+/g, " ") || "";
-    let hashtags = rawCaption.match(/#[^\s#]+/g)?.join(', ') || "No Hashtags";
-    
-    // Scrape Video Metrics
-    let vidLikes = document.querySelector('[data-e2e="like-count"]')?.innerText || "0";
-    let vidShares = document.querySelector('[data-e2e="share-count"]')?.innerText || "0";
+    // --- PART 1: Define Scope ---
+    // Finds the active video container by looking for any comment (level 1 or 2)
+    let anchor = document.querySelector('[data-e2e="comment-level-1"], [data-e2e="comment-level-2"]');
+    let scope = document.body;
+    if (anchor) {
+        scope = anchor.closest('article') || 
+                anchor.closest('div[class*="DivVideoDetailContainer"]') || 
+                document.body;
+    }
 
-    // --- PART 2: Comment Mining (Child Data) ---
-    // Targets the specific container class for TikTok's current DOM structure
-    let commentItems = document.querySelectorAll('div[class*="DivCommentItemWrapper"]');
+    // --- PART 2: Extract Video Metadata ---
+    let url = window.location.href;
+    let videoId = url.split('video/')[1]?.split('?')[0] || "Unknown";
+    
+    // Caption & Hashtags
+    let rawCaption = "No Caption";
+    let hashtags = "No Hashtags";
+    let descEl = scope.querySelector('[data-e2e="video-desc"]');
+    if (descEl) {
+        rawCaption = descEl.innerText.replace(/[\n\r\t]+/g, " ");
+        hashtags = rawCaption.match(/#[^\s#]+/g)?.join(', ') || "No Hashtags";
+    }
+
+    // Post Date (From Creator Info Container)
+    let postDate = "Unknown Date";
+    let infoContainer = scope.querySelector('div[class*="DivCreatorInfoContainer"]');
+    if (infoContainer) {
+        let textNodes = infoContainer.innerText.split('·');
+        if (textNodes.length > 1) {
+            postDate = textNodes[textNodes.length - 1].trim();
+        }
+    }
+
+    // Video Stats
+    let vidLikes = scope.querySelector('[data-e2e="like-count"]')?.innerText || "0";
+    let vidShares = scope.querySelector('[data-e2e="share-count"]')?.innerText || "0";
+    let vidViews = ""; // Blank for manual entry
+
+    // --- PART 3: Extract Comments (Level 1 & Level 2) ---
+    // Targets both main comments AND manually expanded replies
+    let commentItems = scope.querySelectorAll('[data-e2e="comment-level-1"], [data-e2e="comment-level-2"]');
 
     if (commentItems.length === 0) {
-        alert("No comments found! Scroll down first.");
+        alert("No comments found! Please scroll down or open some replies first.");
         return;
     }
 
     let outputData = "";
 
-    commentItems.forEach(item => {
-        // Scrape User & Text
-        let username = item.querySelector('[data-e2e="comment-username-1"]')?.innerText.replace(/[\n\r\t]+/g, " ") || "Unknown";
-        let text = item.querySelector('[data-e2e="comment-level-1"]')?.innerText.replace(/[\n\r\t]+/g, " ") || "";
+    commentItems.forEach(textEl => {
+        // Find the parent container for this specific comment/reply
+        let row = textEl.closest('div[class*="CommentItem"]') || 
+                  textEl.closest('div[class*="ContentWrapper"]') || 
+                  textEl.parentElement.parentElement;
+
+        if (!row) return;
+
+        // Grab username (works for both level-1 and level-2)
+        let username = row.querySelector('[data-e2e^="comment-username"]')?.innerText.replace(/[\n\r\t]+/g, " ") || "Unknown";
+        let commentText = textEl.innerText.replace(/[\n\r\t]+/g, " ");
         
-        // Scrape Engagement Metrics
-        let likes = item.querySelector('div[class*="DivLikeContainer"] span')?.innerText || "0";
-        let time = item.querySelector('div[class*="DivCommentSubContentWrapper"] span')?.innerText || "Unknown";
+        // Grab comment-specific likes
+        let comLikes = row.querySelector('[data-e2e="comment-like-count"]')?.innerText || 
+                       row.querySelector('div[class*="DivLikeContainer"] span')?.innerText || "0";
 
-        // Logic to extract Reply Count from "View X replies" button
-        let replyBtn = item.querySelector('[data-e2e="comment-reply-count"]'); 
-        let replyCount = "0";
-        if (replyBtn) {
-            replyCount = replyBtn.innerText.match(/\d+/)?.[0] || "0";
-        }
-
-        // Format data with Tab separators for Excel
-        outputData += `${videoId}\t${url}\t${rawCaption}\t${hashtags}\t${vidLikes}\t${vidShares}\t${username}\t${text}\t${likes}\t${replyCount}\t${time}\n`;
+        // Output row structure:
+        // VideoID | URL | PostDate | Caption | Hashtags | Views | VidLikes | VidShares | User | Comment | ComLikes
+        outputData += `${videoId}\t${url}\t${postDate}\t${rawCaption}\t${hashtags}\t${vidViews}\t${vidLikes}\t${vidShares}\t${username}\t${commentText}\t${comLikes}\n`;
     });
 
-    // --- PART 3: Export to Clipboard ---
+    // --- PART 4: Copy to Clipboard ---
     let dummy = document.createElement("textarea");
     document.body.appendChild(dummy);
     dummy.value = outputData;
@@ -73,5 +100,6 @@ I used a JavaScript script to scrape the DOM and extract the following features:
     document.execCommand("copy");
     document.body.removeChild(dummy);
 
-    console.log(`Success! Scraped ${commentItems.length} comments.`);
+    console.log(`Success! Scraped ${commentItems.length} total rows.`);
+    alert(`Success!\n\nCaptured ${commentItems.length} comments & replies.\n\nVideo: ${videoId}\nLikes: ${vidLikes}\n\nPaste into Excel (Ctrl+V).`);
 })();
