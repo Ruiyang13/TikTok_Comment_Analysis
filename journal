@@ -1,5 +1,11 @@
-Getting the data:
+Getting the data as of 24/12/2025 :
 It is tough since TikTok has strict restrictions on scraping data and I do not want my account to be locked. Extensions are expensive, probabily against platform guidelines and privacy is also a concern. 
 Therefore I used the dumbest way: to copy paste the comments myself. Not literally just selecting all the comments and scroll down, but still quite tedious. So I manually scrolled down and opened the replies to comments, then using java script, get the respective comment and video data. 
 But the limitations are that 1. it's tedious to manually scroll down, but if i use an automatic scroller through javascript, thats against platform guidelines. 2. Not all comments are captured since sometimes human may not open all the replies under each comment.
-3. 
+3. tiktok does not show video views in the browswer mode, so I had to manually add them in. 4. I cant get comments with images, which AI might not even accurately understand the meaning behind as for now. So i will exlcude them from my analysis. 
+
+I also realized that not all the comments are in English, so I need to translate them into the same language for better analysis. Tho why and the differences in the comment language can be another thing to explore later in anayalysis. 
+Should comments with more likes have more weightage in analysis? and what formula to use to give them the weightage?
+However I should also consider that as time goes the follower counts increase too, which might affect the analysis. So even with the same video, same content, if I post it 3 months ago vs now, it might have diff comment counts. If the video is posted after a viral video, more comments and views are also expected. Therefore the comment count doesnt necessarily affect the quality of the video. High comment count can be attributed to many different factors like whether it is controversial, engaging, etc. In fact sometimes viewers are not engaged, thats why they left a comment to "distract" themselves, like in a cringe video. 
+Therefore I should focus more on the content of the comments. Then again, the context of the video is also very imporatnt when analysisng the comments. 
+Eventhogh this is purely for research purposes, is there still a need to unidentify the indivuduals? Sometimes the same user can comment similar things and that might be useful for analysis. 
