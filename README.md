@@ -103,3 +103,10 @@ I used a JavaScript script to scrape the DOM and extract the following features:
     console.log(`Success! Scraped ${commentItems.length} total rows.`);
     alert(`Success!\n\nCaptured ${commentItems.length} comments & replies.\n\nVideo: ${videoId}\nLikes: ${vidLikes}\n\nPaste into Excel (Ctrl+V).`);
 })();
+```
+## Data cleaning: 
+### 1. Standardize dates, likes, views, likes.
+### 2. Deleted duplicate comments.
+### 3. Replaced empty comments with Nil. (Empty comment highly likely meant that it was an image, but the code I used above was not able to capture it ,and image analysis is another level of difficulty, thus I will ignore them for now, despite them being a quite important part of comments.)
+
+
