@@ -7,7 +7,7 @@ As a content creator, feedbacks are one of the most crucial things.
 **Date:** December 2025
 
 ## 🎯 Project Objective
-To analyze comments under my own videos.
+To analyze comments under my own videos. The challenging part of this project is that many comments used Gen-z slangs and memes, thus traditional way of sentiment analysis may not work very well.
 
 ## 🛠️ Methodology
 I extracte data directly from the TikTok web interface using browser console scripts.
