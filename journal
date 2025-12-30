@@ -9,3 +9,9 @@ Should comments with more likes have more weightage in analysis? and what formul
 However I should also consider that as time goes the follower counts increase too, which might affect the analysis. So even with the same video, same content, if I post it 3 months ago vs now, it might have diff comment counts. If the video is posted after a viral video, more comments and views are also expected. Therefore the comment count doesnt necessarily affect the quality of the video. High comment count can be attributed to many different factors like whether it is controversial, engaging, etc. In fact sometimes viewers are not engaged, thats why they left a comment to "distract" themselves, like in a cringe video. 
 Therefore I should focus more on the content of the comments. Then again, the context of the video is also very imporatnt when analysisng the comments. 
 Eventhogh this is purely for research purposes, is there still a need to unidentify the indivuduals? Sometimes the same user can comment similar things and that might be useful for analysis. 
+
+
+Data cleaning steps:
+1. Convert "K" and "M" to Numbers
+2. Standardize Dates
+3. Handling Duplicate and Empty Comments
