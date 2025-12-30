@@ -7,7 +7,7 @@ As a content creator, feedbacks are one of the most crucial things.
 **Date:** December 2025
 
 ## 🎯 Project Objective
-To analyze comments under my own videos. The challenging part of this project is that many comments used Gen-z slangs and memes, thus traditional way of sentiment analysis may not work very well.
+To analyze comments under my own videos. The challenging part of this project is that many comments used Gen-z slangs and memes, thus traditional way of sentiment analysis may not work very well. In addition, the comments come in many different languages, so some processing also needs to be done. 
 
 ## 🛠️ Methodology
 I extracte data directly from the TikTok web interface using browser console scripts.
@@ -104,9 +104,25 @@ I used a JavaScript script to scrape the DOM and extract the following features:
     alert(`Success!\n\nCaptured ${commentItems.length} comments & replies.\n\nVideo: ${videoId}\nLikes: ${vidLikes}\n\nPaste into Excel (Ctrl+V).`);
 })();
 ```
+</details>
+
 ## Data cleaning: 
 ### 1. Standardize dates, likes, views, likes.
 ### 2. Deleted duplicate comments.
 ### 3. Replaced empty comments with Nil. (Empty comment highly likely meant that it was an image, but the code I used above was not able to capture it ,and image analysis is another level of difficulty, thus I will ignore them for now, despite them being a quite important part of comments.)
 
+## The dataset
+### This dataset contains 11 columns and 10,880 rows of data (excluding the header row). Each row records a comment for a specific video, meaning the same Video ID appears multiple times.
+Here are the columns:
+Video ID: The unique identifier for the video.
+URL: The link to the video on TikTok.
+Post Date: The date the video was posted, ranging from May 2025 to Dec 2025.
+Caption: The title or description of the video, which includes hashtags.
+Hashtags: The hashtags used in the caption.
+Vid Views: The number of views the video has received.
+Vid Likes: The number of likes the video has received.
+Vid Shares: The number of times the video has been shared.
+Username: The username of the person who posted the comment.
+Comments: The text content of the comments, which includes texts from different languages, as well as emojis.
+Comment Likes: The number of likes a specific comment has received.
 
