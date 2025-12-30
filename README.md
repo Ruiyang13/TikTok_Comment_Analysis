@@ -115,14 +115,24 @@ I used a JavaScript script to scrape the DOM and extract the following features:
 ### This dataset contains 11 columns and 10,880 rows of data (excluding the header row). Each row records a comment for a specific video, meaning the same Video ID appears multiple times.
 Here are the columns:
 Video ID: The unique identifier for the video.
+
 URL: The link to the video on TikTok.
+
 Post Date: The date the video was posted, ranging from May 2025 to Dec 2025.
+
 Caption: The title or description of the video, which includes hashtags.
+
 Hashtags: The hashtags used in the caption.
+
 Vid Views: The number of views the video has received.
+
 Vid Likes: The number of likes the video has received.
+
 Vid Shares: The number of times the video has been shared.
+
 Username: The username of the person who posted the comment.
+
 Comments: The text content of the comments, which includes texts from different languages, as well as emojis.
+
 Comment Likes: The number of likes a specific comment has received.
 
