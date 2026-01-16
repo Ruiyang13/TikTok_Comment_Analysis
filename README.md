@@ -1,6 +1,8 @@
 # TikTok_Comment_Analysis
 As a content creator, feedbacks are one of the most crucial things. 
-
+[![Python](https://img.shields.io/badge/Python-3.9%2B-blue)](https://www.python.org/)
+[![Status](https://img.shields.io/badge/Status-Complete-green)]()
+[![Privacy](https://img.shields.io/badge/Data%20Privacy-Enforced-red)]()
 
 **Author:** exploding_rat  
 **Tools Used:** JavaScript, Excel , Python  
