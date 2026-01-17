@@ -163,27 +163,65 @@ I used a JavaScript script to scrape the DOM and extract the following features:
 
 ## 🧩 The 5 Core Components
 
-### Component 1: Meme Lifecycle Analysis (Stage 1)
-Tracking the rise and fall of community-specific buzzwords to predict "content fatigue."
-*   **Method:** TF-IDF extraction weighted by engagement.
-*   **Key Insight:** The meme *"chanh noe"* shows a decline in engagement effectiveness once it exceeds **15%** of total comment volume [Source: meme_lifecycle_results.csv].
+### Component 1: Meme Lifecycle Analysis 
+**Trying to see *when* a meme dies.**
 
-### Component 2: Cross-Cultural Resonance (Stage 2)
-Analyzing how "Cringe" translates across **English, Chinese, Vietnamese, and Korean** audiences.
-*   **Method:** Language detection + Correlation Matrix.
-*   **Key Insight:** **Vietnamese (VI)** comments have the highest correlation with **Video Shares**, indicating a "Language Dividend" where specific sub-communities drive virality [Source: stage4_cross_cultural_report.md].
+*   **Methodology:**
+    *   **Weighted TF-IDF(Term Frequency - Inverse Document Frequency) Extraction:** I used `Comment Likes` as a weight. A meme with high comment likes count (e.g., *"hard watch"*) is assigned a higher weight than frequent but low-engagement terms [Source: stage4_insights_report.md].
+    *   **Non-linear Fatigue Analysis:** Moving beyond linear regression to identify "inflection points." Analysis shows that when a specific meme (e.g., *"chanh noe"*) exceeds **15-20%** of total comment volume, user engagement rates exhibit a non-linear decline [Source: stage3_decay_analysis.csv].
+    *   **ML Feature Enhancement:** "Lifecycle Stage" (Rising, Mature, Stale) was engineered as a feature for the **Random Forest** model, improving the engagement prediction accuracy ($R^2$ Score) by **4.65%** [Source: stage4_insights_report.md].
 
-### Component 3: Persona Alignment Scoring (PCS)
-A custom algorithm (0-1) to quantify if a user "gets the joke."
-*   **Logic:** Distinguishes between genuine hate (Low PCS) and ironic compliments like *"Hard watch"* or *"Social anxiety is scared of her"* (High PCS).
-*   **Result:** Comments traditionally flagged as "Negative" by VADER sentiment analysis actually correlate with higher engagement [Source: persona_alignment_analysis.csv].
+*   **Key Insights:**
+    *   **Meme Vitality:** *"chanh noe"* is the absolute core driver, with 552 occurrences and a high confidence interval [Source: meme_lifecycle_results.csv].
+    *   **Early Warning System:** The code detects "aesthetic fatigue." While *"hard watch"* has high interaction rates, marginal returns diminish when its frequency becomes too high within a single video [Source: stage4_insights_report.md].
 
-### Component 4: Strategic Intent Filtering
-Automated classification of user demands to drive content strategy.
-*   **Tools:** Regex + Intent Classification.
-*   **Output:** Separates **"Content Requests"** (e.g., *"Singing videos please"*) from **"Rhetorical Questions"** (e.g., *"Why is she like this?"*) [Source: fan_requests.csv].
+### Component 2: Cross-Cultural Resonance 
+**Trying to see the differences between commenters using different language.**
 
-### Component 5: Individual User Analysis (CRM)
-Analyzing the *commenters* themselves to identify "Soul Fans" vs. "Bots."
-*   **Loyalty Index:** Identifies users like *Mayurindere* (Commented on 29 videos) vs one-time passersby [Source: user_detailed_report.md].
-*   **Authenticity Score:** Filters out users who span generic emojis (e.g., "😍😍😍") to find high-value interactions.
+*   **Methodology:**
+    *   **Mann-Whitney U Test:** Used to statistically verify engagement differences between Singlish and Standard English comments ($P\text{-Value} = 0.0991$, indicating no significant difference, but qualitative analysis suggests strong identity resonance) [Source: stage1_language_engagement.csv].
+    *   **Cultural Isolation Ratio:** Calculated via the metric: $(\text{Avg Likes in Hot Lang}) / (\text{Avg Likes in Cold Lang})$.
+    *   **Correlation Matrix:** Analyzed the correlation between language composition and `Vid Shares` [Source: stage4_language_dividend.csv].
+
+*   **Key Insights:**
+    *   **The Language Dividend:** While English is the dominant language (34% of comments), Vietnamese comments show a high correlation of **0.793** with video shares, far exceeding English and Chinese. This identifies my Vietnamese audiences are a primary engine for improving the virality of my videos. [Source: stage4_cross_cultural_report.md].
+    *   **Cultural Isolation: The meme *"chanh noe"* averages **17.94** likes in Vietnamese contexts but only **0.09** in English. This **197x difference** proves it is a community-specific "cultural code" rather than a global meme [Source: stage4_cultural_isolation_points.csv].
+    *    **Echo Chambers:** Specific hashtags induce specific linguistic behaviors. Using #bostickchen (a reference to a Chinese creator) increased teasing behavior in Chinese comments by 33%, whereas #slay induced performative praise in English comments. The meme *"chanh noe"* (a reference to a Chinese creator) averages **17.94** likes in Vietnamese contexts but only **0.09** in English. This **197x difference** proves it is a community-specific "cultural code" rather than a global meme [Source: stage4_cultural_isolation_points.csv].
+
+### Component 3: Persona Alignment Scoring (PCS) 
+
+*   **Methodology:**
+    *   **Counter-Intuitive Sentiment Modeling:** Sometimes traditional NLP tools (like VADER), will flag terms like *"Hard watch"* or *"Social anxiety"* as negative. But in the context of my videos, it can actually mean the opposite.
+    *   **PCS Algorithm:** A custom 0-1 scoring system. If a comment contains *"Hard watch"* and receives high likes, the PCS is corrected to **8.0/10** (High Resonance), overriding the negative sentiment classification [Source: persona_alignment_analysis.csv].
+    *   **Log Transformation:** To normalize the long-tail effect of viral videos, like counts were log-transformed, confirming that "Ironic Positive" comments have a log-engagement **0.68** higher than "Generic Positive" comments [Source: sentiment_analysis_comparison.png].
+
+*   **Key Insights:**
+    *   **Negative is Positive:** Data proves that comments traditionally viewed as "negative" (e.g., *"cringe"*, *"hard watch"*) actually drive **120+ average likes**, whereas generic *"pretty"* or *"nice"* comments average only ~30. This is the brand's defensive moat [Source: stage4_insights_report.md].
+    *   **Cluster Analysis:** The terms *"尴尬"* (Chinese), *"hard watch"* (English), and *"ngại"* (Vietnamese) were clustered into **"Embarrassment-based Engagement,"** proving this mechanism works cross-culturally [Source: semantic_clusters.csv].
+
+### Component 4: Strategic Intent Filtering (NLP Classification)
+**"Separating 'Noise' from 'Signal' in 10,000 comments."**
+
+*   **Methodology:**
+    *   **Intent Classifier:** Utilizing Regex and keyword logic to categorize comments into four distinct intents:
+        1.  **Content_Request:** Specific demands (e.g., *"Piano and singing"*) [Source: fan_requests.csv].
+        2.  **Information_Inquiry:** Genuine questions (e.g., *"what room is this?", "is this NTU?"*) [Source: question_intents.csv].
+        3.  **Rhetorical_Shock:** Reactions of disbelief (e.g., *"why is the video an hour long?!"*) — usually not requiring a reply.
+        4.  **Identity_Verification:** Confirmation of background (e.g., *"Wait aren't u the YMCA teacher"*).
+
+*   **Key Insights:**
+    *   **High-Value Interactions:** The code successfully filtered valuable inquiries like *"this is like NTU hostel but what room is this"* from noise. Replying to these builds significantly higher stickiness than generic replies.
+    *   **Content Roadmap:** Filtered specific demand signals for *"Singing"* and *"Hard watch"* series, providing data-driven direction for future video topics.
+
+### Component 5: Individual User Analysis (CRM & Bot Detection)
+**"Identifying 'Hardcore Fans'"**
+
+*   **Methodology:**
+    *   **Loyalty Index:** Calculated based on the number of **unique videos** a user has commented on.
+    *   **Authenticity Score:** Based on the variance of text diversity. Logic: If a user posts 10 comments containing only "😂😂😂", variance is 0, resulting in a low authenticity score [Source: user_behavior_summary.csv].
+
+*   **Key Insights:**
+*   The "Hardcore Fans" : The top 1% of loyal users (commenting on >20 videos) tend to leave comments with high lexical diversity. They reference past videos, indicating deep engagement.
+*   The "Bot" Detection: The algorithm flagged a specific cohort of users who commented on 10+ videos with identical strings (e.g., "😍😍😍"). These users had an Authenticity Score near 0.0, allowing them to be filtered out of strategic sentiment analysis to prevent data skewing.
+
+---
