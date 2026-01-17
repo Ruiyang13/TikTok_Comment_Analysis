@@ -1,15 +1,44 @@
 # TikTok_Comment_Analysis
-As a content creator, feedbacks are one of the most crucial things. 
+
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue)](https://www.python.org/)
 [![Status](https://img.shields.io/badge/Status-Complete-green)]()
 [![Privacy](https://img.shields.io/badge/Data%20Privacy-Enforced-red)]()
+
+For a content creator, feedbacks are one of the most crucial things. 
 
 **Author:** exploding_rat  
 **Tools Used:** JavaScript, Excel , Python  
 **Date:** December 2025
 
+As a TikTok creator (**@exploding_rat**) with **65k followers** and **2.6M likes**, my content relies on a specific persona: *"cringe / make others uncomfortable / no social anxiety"*
+
+Standard analytics provided by TikTok track the quantity of comments, but they fail to track *meaning* behind (do they even get the joke?). Therefore, this project uses **NLP** and **Machine Learning** to analyze **10k+ comments** across 69 videos. 
+
 ## 🎯 Project Objective
-To analyze comments under my own videos. The challenging part of this project is that many comments used Gen-z slangs and memes, thus traditional way of sentiment analysis may not work very well. In addition, the comments come in many different languages, so some processing also needs to be done. 
+To analyze comments under my own videos. The challenging part of this project is that many comments used Gen-z slangs and memes, thus traditional way of sentiment analysis may not work very well. In addition, the comments come in many different languages, so some processing also needs to be done. Sadly many comments include images or stickers, but I will not touch on that for now. 
+
+
+## 🔒 Data Privacy & Schema
+To respect the privacy of the commenters, **raw datasets are NOT included** in this repository. All analysis is performed locally. The dataset structure used for the models is described below:
+
+### 1. Comment Data Schema (`TikTok_with_PCS_scores.csv`)
+| Column | Description |
+| :--- | :--- |
+| `Video_ID` | Unique identifier for the video post |
+| `Comment_Text` | The text content (sanitized) |
+| `Comment_Likes` | Engagement on the specific comment |
+| `Language` | Detected language (e.g., 'en', 'zh-cn', 'vi') |
+| `PCS_Score` | **Persona Congruence Score** (0.0 - 1.0): My custom metric for "persona fit" |
+| `Sentiment_Label`| "Ironic Positive", "Generic Positive", or "Neutral" |
+
+### 2. User Behavior Schema (`user_behavior_summary.csv`)
+| Column | Description |
+| :--- | :--- |
+| `Loyalty_Index` | Number of unique videos a user has commented on |
+| `Authenticity` | Score based on comment variety (detects repetitive bots) |
+| `Avg_Likes` | Average likes their comments receive (Community Status) |
+
+
 
 ## 🛠️ Methodology
 I extracte data directly from the TikTok web interface using browser console scripts.
@@ -108,33 +137,53 @@ I used a JavaScript script to scrape the DOM and extract the following features:
 ```
 </details>
 
-## Data cleaning: 
-### 1. Standardize dates, likes, views, likes.
-### 2. Deleted duplicate comments.
-### 3. Replaced empty comments with Nil. (Empty comment highly likely meant that it was an image, but the code I used above was not able to capture it ,and image analysis is another level of difficulty, thus I will ignore them for now, despite them being a quite important part of comments.)
-
-## The dataset
+## The original dataset
 ### This dataset contains 11 columns and 10,880 rows of data (excluding the header row). Each row records a comment for a specific video, meaning the same Video ID appears multiple times.
-Here are the columns:
-Video ID: The unique identifier for the video.
 
-URL: The link to the video on TikTok.
+| Column | Description |
+| :--- | :--- |
+| `Video_ID` | Unique identifier for the video post |
+| `URL`| Direct web link to the specific TikTok video |
+| `Post Date`| The date the video was originally uploaded |
+| `Caption` | The text description accompanying the video |
+| `Hashtags` | List of tags used in the post |
+| `Vid Likes` | Total like count for the video post itself |
+| `Vid Views`| Total view count for the video as of Decemember 27th |
+| `Vid Shares` | Total number of times the video was shared |
+| `Comment_Text` | The text content (sanitized) |
+| `Comment_Likes` | Engagement on the specific comment |
+| `Username` | Display name of the user who commented |
 
-Post Date: The date the video was posted, ranging from May 2025 to Dec 2025.
+## Data cleaning: 
+ 1. Standardize dates, likes, views, likes.
+ 2. Deleted duplicate comments.
+ 3. Replaced empty comments with Nil. (Empty comment highly likely meant that it was an image, but the code I used above was not able to capture it ,and image analysis is another level of difficulty, thus I will ignore them for now, despite them being a quite important part of comments.)
 
-Caption: The title or description of the video, which includes hashtags.
 
-Hashtags: The hashtags used in the caption.
 
-Vid Views: The number of views the video has received.
+## 🧩 The 5 Core Components
 
-Vid Likes: The number of likes the video has received.
+### Component 1: Meme Lifecycle Analysis (Stage 1)
+Tracking the rise and fall of community-specific buzzwords to predict "content fatigue."
+*   **Method:** TF-IDF extraction weighted by engagement.
+*   **Key Insight:** The meme *"chanh noe"* shows a decline in engagement effectiveness once it exceeds **15%** of total comment volume [Source: meme_lifecycle_results.csv].
 
-Vid Shares: The number of times the video has been shared.
+### Component 2: Cross-Cultural Resonance (Stage 2)
+Analyzing how "Cringe" translates across **English, Chinese, Vietnamese, and Korean** audiences.
+*   **Method:** Language detection + Correlation Matrix.
+*   **Key Insight:** **Vietnamese (VI)** comments have the highest correlation with **Video Shares**, indicating a "Language Dividend" where specific sub-communities drive virality [Source: stage4_cross_cultural_report.md].
 
-Username: The username of the person who posted the comment.
+### Component 3: Persona Alignment Scoring (PCS)
+A custom algorithm (0-1) to quantify if a user "gets the joke."
+*   **Logic:** Distinguishes between genuine hate (Low PCS) and ironic compliments like *"Hard watch"* or *"Social anxiety is scared of her"* (High PCS).
+*   **Result:** Comments traditionally flagged as "Negative" by VADER sentiment analysis actually correlate with higher engagement [Source: persona_alignment_analysis.csv].
 
-Comments: The text content of the comments, which includes texts from different languages, as well as emojis.
+### Component 4: Strategic Intent Filtering
+Automated classification of user demands to drive content strategy.
+*   **Tools:** Regex + Intent Classification.
+*   **Output:** Separates **"Content Requests"** (e.g., *"Singing videos please"*) from **"Rhetorical Questions"** (e.g., *"Why is she like this?"*) [Source: fan_requests.csv].
 
-Comment Likes: The number of likes a specific comment has received.
-
+### Component 5: Individual User Analysis (CRM)
+Analyzing the *commenters* themselves to identify "Soul Fans" vs. "Bots."
+*   **Loyalty Index:** Identifies users like *Mayurindere* (Commented on 29 videos) vs one-time passersby [Source: user_detailed_report.md].
+*   **Authenticity Score:** Filters out users who span generic emojis (e.g., "😍😍😍") to find high-value interactions.
