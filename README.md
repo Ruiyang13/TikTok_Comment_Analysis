@@ -21,24 +21,6 @@ To analyze comments under my own videos. The challenging part of this project is
 ## 🔒 Data Privacy & Schema
 To respect the privacy of the commenters, **raw datasets are NOT included** in this repository. All analysis is performed locally. The dataset structure used for the models is described below:
 
-### 1. Comment Data Schema (`TikTok_with_PCS_scores.csv`)
-| Column | Description |
-| :--- | :--- |
-| `Video_ID` | Unique identifier for the video post |
-| `Comment_Text` | The text content (sanitized) |
-| `Comment_Likes` | Engagement on the specific comment |
-| `Language` | Detected language (e.g., 'en', 'zh-cn', 'vi') |
-| `PCS_Score` | **Persona Congruence Score** (0.0 - 1.0): My custom metric for "persona fit" |
-| `Sentiment_Label`| "Ironic Positive", "Generic Positive", or "Neutral" |
-
-### 2. User Behavior Schema (`user_behavior_summary.csv`)
-| Column | Description |
-| :--- | :--- |
-| `Loyalty_Index` | Number of unique videos a user has commented on |
-| `Authenticity` | Score based on comment variety (detects repetitive bots) |
-| `Avg_Likes` | Average likes their comments receive (Community Status) |
-
-
 
 ## 🛠️ Methodology
 I extracte data directly from the TikTok web interface using browser console scripts.
@@ -191,34 +173,36 @@ I used a JavaScript script to scrape the DOM and extract the following features:
 ### Component 3: Persona Alignment Scoring (PCS) 
 
 *   **Methodology:**
-    *   **Counter-Intuitive Sentiment Modeling:** Sometimes traditional NLP tools (like VADER), will flag terms like *"Hard watch"* or *"Social anxiety"* as negative. But in the context of my videos, it can actually mean the opposite.
-    *   **PCS Algorithm:** A custom 0-1 scoring system. If a comment contains *"Hard watch"* and receives high likes, the PCS is corrected to **8.0/10** (High Resonance), overriding the negative sentiment classification [Source: persona_alignment_analysis.csv].
+    *   **Counter-Intuitive Sentiment Modeling:** Sometimes traditional NLP tools (like VADER), will flag terms like *"Hard watch"* or *"Social anxiety"* as negative. But in the context of my videos, it can actually mean the opposite. Therefore, a custom 0-1 scoring system is designed. If a comment contains certain words like *"Hard watch"*, *"unc"*, etc, the PCS is corrected to **8.0/10** (High Resonance), overriding the negative sentiment classification. In addition, if the comment receives high amount of likes, meaning that the community validated the sentiment, it will also be given a higher PCS score. [Source: persona_alignment_analysis.csv]. (However, the it is a binary classficiation, once a word is not in the wordlist, the algorithm is then unable to classify it as ironic-positive, even when it is. Further improvements can be done here. )
     *   **Log Transformation:** To normalize the long-tail effect of viral videos, like counts were log-transformed, confirming that "Ironic Positive" comments have a log-engagement **0.68** higher than "Generic Positive" comments [Source: sentiment_analysis_comparison.png].
 
 *   **Key Insights:**
-    *   **Negative is Positive:** Data proves that comments traditionally viewed as "negative" (e.g., *"cringe"*, *"hard watch"*) actually drive **120+ average likes**, whereas generic *"pretty"* or *"nice"* comments average only ~30. This is the brand's defensive moat [Source: stage4_insights_report.md].
-    *   **Cluster Analysis:** The terms *"尴尬"* (Chinese), *"hard watch"* (English), and *"ngại"* (Vietnamese) were clustered into **"Embarrassment-based Engagement,"** proving this mechanism works cross-culturally [Source: semantic_clusters.csv].
+    *   **Negative is Positive:** Data proves that comments traditionally viewed as "negative" (e.g., *"cringe"*, *"hard watch"*) actually drive **120+ average likes**, whereas generic *"pretty"* or *"nice"* comments average only ~30. [Source: stage4_insights_report.md].
 
 ### Component 4: Strategic Intent Filtering (NLP Classification)
-**"Separating 'Noise' from 'Signal' in 10,000 comments."**
+**Helping me more effectively identify the comments to reply to.**
 
 *   **Methodology:**
-    *   **Intent Classifier:** Utilizing Regex and keyword logic to categorize comments into four distinct intents:
-        1.  **Content_Request:** Specific demands (e.g., *"Piano and singing"*) [Source: fan_requests.csv].
-        2.  **Information_Inquiry:** Genuine questions (e.g., *"what room is this?", "is this NTU?"*) [Source: question_intents.csv].
+  
+1. Broad Capture (is_potential_question): The system first flags comments containing interrogative keywords (Who, What, Where, How) or auxiliary verbs (Can, Is, Do), identifying questions even if the user omitted punctuation (e.g., "where did you get that shirt").
+2. Intent Classification: The algorithm then sorts these potential questions into different intents.
+   
+    *   **Intent Classifier:** Using Regex and keyword logic to categorize comments into four distinct intents:
+        1.  **Content_Request:** Specific demands (e.g., *"Piano and singing"*).
+        2.  **Information_Inquiry:** Genuine questions (e.g., *"is this NTU?"*) 
         3.  **Rhetorical_Shock:** Reactions of disbelief (e.g., *"why is the video an hour long?!"*) — usually not requiring a reply.
-        4.  **Identity_Verification:** Confirmation of background (e.g., *"Wait aren't u the YMCA teacher"*).
+        4.  **Identity_Verification:** Confirmation of background. [Source: question_intents.csv].
 
 *   **Key Insights:**
-    *   **High-Value Interactions:** The code successfully filtered valuable inquiries like *"this is like NTU hostel but what room is this"* from noise. Replying to these builds significantly higher stickiness than generic replies.
+    *   **High-Value Interactions:** The code successfully filtered valuable inquiries from noise.
     *   **Content Roadmap:** Filtered specific demand signals for *"Singing"* and *"Hard watch"* series, providing data-driven direction for future video topics.
 
 ### Component 5: Individual User Analysis (CRM & Bot Detection)
-**"Identifying 'Hardcore Fans'"**
+**Identifying Hardcore Fans**
 
 *   **Methodology:**
     *   **Loyalty Index:** Calculated based on the number of **unique videos** a user has commented on.
-    *   **Authenticity Score:** Based on the variance of text diversity. Logic: If a user posts 10 comments containing only "😂😂😂", variance is 0, resulting in a low authenticity score [Source: user_behavior_summary.csv].
+    *   **Authenticity Score:** Based on the **variance** of text diversity. Logic: If a user posts 10 comments containing only "😂😂😂", variance is 0, resulting in a low authenticity score [Source: user_behavior_summary.csv].
 
 *   **Key Insights:**
 *   The "Hardcore Fans" : The top 1% of loyal users (commenting on >20 videos) tend to leave comments with high lexical diversity. They reference past videos, indicating deep engagement.
