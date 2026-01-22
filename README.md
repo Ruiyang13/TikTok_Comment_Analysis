@@ -17,7 +17,18 @@ Standard analytics provided by TikTok track the quantity of comments, but they f
 ## 🎯 Project Objective
 To move beyong the quantitative statistics already provided by TikTok, and extract actionable insights from unstructured comments. 
 
-
+### File Organization & Purpose
+| Location | File | Logic Purpose |
+| :--- | :--- | :--- |
+| **Root** | `app.py` | **Streamlit Dashboard:** The primary UI for data visualization. |
+| **src/** | `extract_top_buzzwords.py` | **Frequency Detection:** Identifies n-grams and high-potential meme candidates. |
+| **src/** | `buzzword_collector.py` | **Context Fetching:** Gathers real-world usage snippets via web scraping. |
+| **src/** | `explain_buzzwords_from_file.py`| **LLM Intelligence:** Uses GPT-4o-mini to define cultural slang and sentiment. |
+| **src/** | `question_and_fan_requests_extraction.py`| **Heuristics:** Regex-based detection for questions and requests. |
+| **src/** | `question_intent_classification.py`| **Intent Analysis:** Categorizes inquiries (e.g., Rhetorical vs. Content Request). |
+| **src/** | `user_behavior_analysis.py` | **Behavioral Modeling:** Calculates Loyalty and Authenticity scores. |
+| **src/** | `clean_and_detect_language.py`| **Preprocessing:** Sanitizes text and classifies linguistic origins. |
+| **src/** | `content_request_analysis.py`| **Reporting:** Generates detailed summaries for content planning. |
 ## 🛠️ Methodology
 
 ### Data Collection
