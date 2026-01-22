@@ -1,0 +1,9 @@
+# Ignore all CSV files in the data folder or root
+*.csv
+data/
+
+# Ignore Python cache and environment files
+__pycache__/
+.venv/
+.env
+.streamlit/
