@@ -21,9 +21,8 @@ To move beyong the quantitative statistics already provided by TikTok, and extra
 | Location | File | Logic Purpose |
 | :--- | :--- | :--- |
 | **Root** | `app.py` | **Streamlit Dashboard:** The primary UI for data visualization. |
-| **src/** | `extract_top_buzzwords.py` | **Frequency Detection:** Identifies high-frequency memes. |
-| **src/** | `buzzword_collector.py` | **Context Fetching:** Gathers real-world usage snippets via web scraping. |
-| **src/** | `explain_buzzwords_from_file.py`| **LLM Intelligence:** Uses GPT-4o-mini to define cultural slang and sentiment. |
+| **src/** | `extract_top_buzzwords.py` | **Frequency Detection:** Identifies top 100 high-frequency words. |
+| **src/** | `explain_buzzwords_from_file.py`| **LLM Intelligence:** Uses GPT-4o-mini to define buzzwords. |
 | **src/** | `question_and_fan_requests_extraction.py`| **Heuristics:** Regex-based detection for questions and requests. |
 | **src/** | `question_intent_classification.py`| **Intent Analysis:** Categorizes inquiries (e.g., Rhetorical vs. Content Request). |
 | **src/** | `user_behavior_analysis.py` | **Behavioral Modeling:** Calculates Loyalty and Authenticity scores. |
