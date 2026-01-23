@@ -20,14 +20,14 @@ To move beyong the quantitative statistics already provided by TikTok, and extra
 ### File Organization & Purpose
 | Location | File | Logic Purpose |
 | :--- | :--- | :--- |
-| **Root** | `app.py` | **Streamlit Dashboard:** The primary UI for data visualization. |
+| **src/** | `clean_and_detect_language.py`| **Preprocessing:** Sanitizes text and classifies linguistic origins. |
 | **src/** | `extract_top_buzzwords.py` | **Frequency Detection:** Identifies top 100 high-frequency words. |
 | **src/** | `explain_buzzwords_from_file.py`| **LLM Intelligence:** Uses GPT-4o-mini to define buzzwords. |
 | **src/** | `question_and_fan_requests_extraction.py`| **Heuristics:** Regex-based detection for questions and requests. |
-| **src/** | `question_intent_classification.py`| **Intent Analysis:** Categorizes inquiries (e.g., Rhetorical vs. Content Request). |
+| **src/** | `question_intent_classification.py`| **Intent Analysis:** Categorizes inquiries (e.g., Rhetorical/Content Request). |
+| **src/** | `content_request_analysis.py`| **Reporting:** filters out rhetorical noise from labeled data, to produce actionable fan requests in both Markdown and Excel formats. |
 | **src/** | `user_behavior_analysis.py` | **Behavioral Modeling:** Calculates Loyalty and Authenticity scores. |
-| **src/** | `clean_and_detect_language.py`| **Preprocessing:** Sanitizes text and classifies linguistic origins. |
-| **src/** | `content_request_analysis.py`| **Reporting:** Generates detailed summaries for content planning. |
+| **Root** | `app.py` | **Streamlit Dashboard:** The primary UI for data visualization. |
 ## 🛠️ Methodology
 
 ### Data Collection
@@ -150,7 +150,7 @@ To respect the privacy of the commenters, **raw datasets are NOT included** in t
  3. Replaced empty comments with Nil. (Empty comment highly likely meant that it was an image, but the code I used above was not able to capture it ,and image analysis is another level of difficulty, thus I will ignore them for now, despite them being a quite important part of comments.)
 
 
-## 🧩 The 5 Core Components
+## 🧩 The 4 Core Components
 
 ### Component 1: Meme Lifecycle Analysis 
 **Trying to see *when* a meme dies.**
@@ -177,16 +177,8 @@ To respect the privacy of the commenters, **raw datasets are NOT included** in t
     *   **Cultural Isolation: The meme *"chanh noe"* averages **17.94** likes in Vietnamese contexts but only **0.09** in English. This **197x difference** proves it is a community-specific "cultural code" rather than a global meme.
     *    **Echo Chambers:** Specific hashtags induce specific linguistic behaviors. Using #bostickchen (a reference to a Chinese creator) increased teasing behavior in Chinese comments by 33%, whereas #slay induced performative praise in English comments. The meme *"chanh noe"* (a reference to a Chinese creator) averages **17.94** likes in Vietnamese contexts but only **0.09** in English. This **197x difference** proves it is a community-specific "cultural code" rather than a global meme.
 
-### Component 3: Persona Alignment Scoring (PCS) 
 
-*   **Methodology:**
-    *   **Counter-Intuitive Sentiment Modeling:** Sometimes traditional NLP tools (like VADER), will flag terms like *"Hard watch"* or *"Social anxiety"* as negative. But in the context of my videos, it can actually mean the opposite. Therefore, a custom 0-1 scoring system is designed. If a comment contains certain words like *"Hard watch"*, *"unc"*, etc, the PCS is corrected to **8.0/10** (High Resonance), overriding the negative sentiment classification. In addition, if the comment receives high amount of likes, meaning that the community validated the sentiment, it will also be given a higher PCS score. (However, the it is a binary classficiation, once a word is not in the wordlist, the algorithm is then unable to classify it as ironic-positive, even when it is. Further improvements can be done here. )
-    *   **Log Transformation:** To normalize the long-tail effect of viral videos, like counts were log-transformed, confirming that "Ironic Positive" comments have a log-engagement **0.68** higher than "Generic Positive" comments.
-
-*   **Key Insights:**
-    *   **Negative is Positive:** Data proves that comments traditionally viewed as "negative" (e.g., *"cringe"*, *"hard watch"*) actually drive **120+ average likes**, whereas generic *"pretty"* or *"nice"* comments average only ~30. 
-
-### Component 4: Strategic Intent Filtering (NLP Classification)
+### Component 3: Strategic Intent Filtering (NLP Classification)
 **Helping me more effectively identify the comments to reply to.**
 
 *   **Methodology:**
@@ -204,7 +196,7 @@ To respect the privacy of the commenters, **raw datasets are NOT included** in t
     *   **High-Value Interactions:** The code successfully filtered valuable inquiries from noise.
     *   **Content Roadmap:** Filtered specific demand signals for *"Singing"* and *"Hard watch"* series, providing data-driven direction for future video topics.
 
-### Component 5: Individual User Analysis (CRM & Bot Detection)
+### Component 4: Individual User Analysis (CRM & Bot Detection)
 **Identifying Hardcore Fans**
 
 *   **Methodology:**
