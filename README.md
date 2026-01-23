@@ -150,25 +150,23 @@ To respect the privacy of the commenters, **raw datasets are NOT included** in t
  3. Replaced empty comments with Nil. (Empty comment highly likely meant that it was an image, but the code I used above was not able to capture it ,and image analysis is another level of difficulty, thus I will ignore them for now, despite them being a quite important part of comments.)
 
 
-## 🧩 The 4 Core Components
+## 🧩 The 5 Core Components
 
 ### Component 1: Meme Lifecycle Analysis 
 **Trying to see *when* a meme dies.**
 
 *   **Methodology:**
     *   **Weighted TF-IDF(Term Frequency - Inverse Document Frequency) Extraction:** I used `Comment Likes` as a weight. A meme with high comment likes count (e.g., *"hard watch"*) is assigned a higher weight than frequent but low-engagement terms.
-    *   **Non-linear Fatigue Analysis:** Moving beyond linear regression to identify "inflection points." Analysis shows that when a specific meme (e.g., *"chanh noe"*) exceeds **15-20%** of total comment volume, user engagement rates exhibit a non-linear decline .
-    *   **ML Feature Enhancement:** "Lifecycle Stage" (Rising, Mature, Stale) was engineered as a feature for the **Random Forest** model, improving the engagement prediction accuracy ($R^2$ Score) by **4.65%** .
+    *   * **Interactive Controls:** Built with `plotly.graph_objects`, allowing users to toggle between **Linear** and **Logarithmic** scales. The Log Scale is critical for comparing niche emerging memes against viral established memes.
+    *   **Dashboard Preview:**
+![Meme Lifecycle Dashboard](Assets/tab1_lifecycle.png)
 
-*   **Key Insights:**
-    *   **Meme Vitality:** *"chanh noe"* is the absolute core driver, with 552 occurrences and a high confidence interval.
-    *   **Early Warning System:** The code detects "aesthetic fatigue." While *"hard watch"* has high interaction rates, marginal returns diminish when its frequency becomes too high within a single video.
 
-### Component 2: Cross-Cultural Resonance 
+
+### Component 2: Cross-Cultural Analysis 
 **Trying to see the differences between commenters using different language.**
 
 *   **Methodology:**
-    *   **Mann-Whitney U Test:** Used to statistically verify engagement differences between Singlish and Standard English comments ($P\text{-Value} = 0.0991$, indicating no significant difference, but qualitative analysis suggests strong identity resonance) .
     *   **Cultural Isolation Ratio:** Calculated via the metric: $(\text{Avg Likes in Hot Lang}) / (\text{Avg Likes in Cold Lang})$.
     *   **Correlation Matrix:** Analyzed the correlation between language composition and `Vid Shares`.
 
@@ -177,6 +175,9 @@ To respect the privacy of the commenters, **raw datasets are NOT included** in t
     *   **Cultural Isolation: The meme *"chanh noe"* averages **17.94** likes in Vietnamese contexts but only **0.09** in English. This **197x difference** proves it is a community-specific "cultural code" rather than a global meme.
     *    **Echo Chambers:** Specific hashtags induce specific linguistic behaviors. Using #bostickchen (a reference to a Chinese creator) increased teasing behavior in Chinese comments by 33%, whereas #slay induced performative praise in English comments. The meme *"chanh noe"* (a reference to a Chinese creator) averages **17.94** likes in Vietnamese contexts but only **0.09** in English. This **197x difference** proves it is a community-specific "cultural code" rather than a global meme.
 
+    *    **Engagement Treemap:** The treemap size represents Comment Volume (Extensive Margin), while the color scale represents Average Likes (Intensive Margin).
+    *   **Dashboard Preview:**
+![Language Dashboard](Assets/tab2_language.png)
 
 ### Component 3: Strategic Intent Filtering (NLP Classification)
 **Helping me more effectively identify the comments to reply to.**
@@ -196,7 +197,22 @@ To respect the privacy of the commenters, **raw datasets are NOT included** in t
     *   **High-Value Interactions:** The code successfully filtered valuable inquiries from noise.
     *   **Content Roadmap:** Filtered specific demand signals for *"Singing"* and *"Hard watch"* series, providing data-driven direction for future video topics.
 
-### Component 4: Individual User Analysis (CRM & Bot Detection)
+### Component 4: Identifying sentiment
+**What do those words imply?**
+
+*   **Methodology:**
+    *   **Buzzword Identification:** It applies Weighted Frequency—prioritizing terms appearing in comments with the highest like counts (e.g., "hard watch" or "social anxiety").
+    *   **Tonal Classification:** Instead of standard binary sentiment, the system uses a custom mapping logic to categorize terms into three distinct tones:
+    *   1. Ironic Positive: Subversive praise specific to my persona (e.g., "cringe", "second-hand embarrassment").
+        2. Generic Positive: Traditional praise (e.g., "slay", "pretty", "nice").
+        3. Neutral/Inquiry: Information seeking or observations (e.g., "where from", "is this NTU").
+
+*   **Key Insights:**
+*   Since my online persona is focused on making cringe/funny videos, looking at comments from the **ironic positive** category will allow me to align my video more towards the keywords mentioned.
+*   **Dashboard Preview:**
+![Sentiment_wordcloud](Assets/tab3_wordcloud.png)
+
+### Component 5: Individual User Analysis
 **Identifying Hardcore Fans**
 
 *   **Methodology:**
@@ -206,5 +222,9 @@ To respect the privacy of the commenters, **raw datasets are NOT included** in t
 *   **Key Insights:**
 *   The "Hardcore Fans" : The top 1% of loyal users (commenting on >20 videos) tend to leave comments with high lexical diversity. They reference past videos, indicating deep engagement.
 *   The "Bot" Detection: The algorithm flagged a specific cohort of users who commented on 10+ videos with identical strings (e.g., "😍😍😍"). These users had an Authenticity Score near 0.0, allowing them to be filtered out of strategic sentiment analysis to prevent data skewing.
+*   **Dashboard Preview:**
+*   Only users that commented on at least 5 videos will be shown in the scatterplot. These are the users that are the hardcore fans, and studying what they tend to comment gives more insights on what kind of videos style should be adapted.
+*   Search function is deployed for easier identification of specific user.
+![Fan Radar Scatter Plot](Assets/tab4_fan_radar.png)
 
 ---
